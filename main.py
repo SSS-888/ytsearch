@@ -102,5 +102,5 @@ if st.button("Search"):
         st.subheader("No Matching Videos Found")
     for video in matching_videos:
       st.write(f"- {video['snippet']['title']}")
-  else:
+else:
     st.subheader("No Matching Videos Found")
