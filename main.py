@@ -1,65 +1,67 @@
-import os
-import googleapiclient.discovery
 import streamlit as st
 
-# Function to get the YouTube service
-def get_youtube_service():
-    api_service_name = "youtube"
-    api_version = "v3"
-    DEVELOPER_KEY = os.getenv("AIzaSyCZUSuITZsHhxfrI9bqoL3Au4L4aedUp3k")  # Set your YouTube API key as an environment variable
+# Placeholder for actual API key (replace with yours after enabling YouTube Data API v3)
+# Refer to https://developers.google.com/youtube/v3/getting-started for guidance
+YOUR_API_KEY = "AIzaSyCZUSuITZsHhxfrI9bqoL3Au4L4aedUp3k"
 
-    return googleapiclient.discovery.build(
-        api_service_name, api_version, developerKey=DEVELOPER_KEY)
+def search_playlist(playlist_url, topic):
+  """
+  Searches a YouTube playlist for videos matching the given topic.
 
-# Function to get videos from a playlist
-def get_videos_from_playlist(playlist_id):
-    youtube = get_youtube_service()
+  Args:
+      playlist_url: The URL of the YouTube playlist.
+      topic: The topic to search for in video titles and descriptions.
 
-    request = youtube.playlistItems().list(
-        part="snippet",
-        playlistId=playlist_id,
-        maxResults=50
-    )
-    response = request.execute()
+  Returns:
+      A list of video dictionaries containing 'title' and 'description' fields.
+  """
 
-    videos = []
-    for item in response['items']:
-        video_id = item['snippet']['resourceId']['videoId']
-        title = item['snippet']['title']
-        description = item['snippet']['description']
-        videos.append({'id': video_id, 'title': title, 'description': description})
+  # Safety checks (replace with more comprehensive filtering if needed)
+  if "list=" not in playlist_url:
+    return []  # Not a valid playlist URL
 
-    return videos
+  video_ids = []  # Store video IDs for later retrieval of details
 
-# Function to search videos by topic
-def search_videos(videos, topic):
-    results = [video for video in videos if topic.lower() in video['title'].lower() or topic.lower() in video['description'].lower()]
-    return results
+  # Simulate playlist data retrieval (replace with actual API call)
+  playlist_data = {
+      "items": [
+          {"snippet": {"resourceId": {"videoId": "VIDEO_ID_1"}}},
+          {"snippet": {"resourceId": {"videoId": "VIDEO_ID_2"}}},
+          # ... more playlist items
+      ]
+  }
 
-# Streamlit app
-def main():
-    st.title("YouTube Playlist Video Search")
-    st.write("Enter a YouTube playlist ID and a topic to search for videos within that playlist.")
+  for item in playlist_data["items"]:
+    video_ids.append(item["snippet"]["resourceId"]["videoId"])
 
-    playlist_id = st.text_input("YouTube Playlist ID")
-    topic = st.text_input("Search Topic")
+  # Simulate video details retrieval (replace with actual API calls)
+  video_details = []
+  for video_id in video_ids:
+    video_data = {
+        "snippet": {
+            "title": f"Video Title for {video_id}",
+            "description": f"Description for video {video_id}"
+        }
+    }
+    video_details.append(video_data)
 
-    if st.button("Search"):
-        if playlist_id and topic:
-            videos = get_videos_from_playlist(playlist_id)
-            matching_videos = search_videos(videos, topic)
+  # Filter videos based on topic (case-insensitive)
+  matching_videos = [
+      video for video in video_details if topic.lower() in video["snippet"]["title"].lower() or topic.lower() in video["snippet"]["description"].lower()
+  ]
+  return matching_videos
 
-            if matching_videos:
-                st.write(f"Found {len(matching_videos)} matching video(s):")
-                for video in matching_videos:
-                    st.write(f"**Title:** {video['title']}")
-                    st.write(f"**Description:** {video['description']}")
-                    st.write(f"[Watch Video](https://www.youtube.com/watch?v={video['id']})")
-                    st.write("---")
-            else:
-                st.write("No matching videos found.")
-        else:
-            st.write("Please enter both a playlist ID and a topic.")
+st.title("YouTube Playlist Topic Search")
 
-if __name__ == "__main__":
-    main()
+playlist_url = st.text_input("Enter YouTube Playlist URL")
+topic = st.text_input("Enter Topic to Search")
+
+if st.button("Search"):
+  matching_videos = search_playlist(playlist_url, topic)
+
+  if matching_videos:
+    st.subheader("Matching Videos:")
+    for video in matching_videos:
+      st.write(f"- {video['snippet']['title']}")
+  else:
+    st.subheader("No Matching Videos Found")
