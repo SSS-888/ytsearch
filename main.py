@@ -6,7 +6,7 @@ import streamlit as st
 def get_youtube_service():
     api_service_name = "youtube"
     api_version = "v3"
-    DEVELOPER_KEY = os.getenv("YOUTUBE_API_KEY")  # Set your YouTube API key as an environment variable
+    DEVELOPER_KEY = os.getenv("AIzaSyCZUSuITZsHhxfrI9bqoL3Au4L4aedUp3k")  # Set your YouTube API key as an environment variable
 
     return googleapiclient.discovery.build(
         api_service_name, api_version, developerKey=DEVELOPER_KEY)
