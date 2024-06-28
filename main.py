@@ -1,11 +1,12 @@
 import os
-import sys
 import subprocess
+import sys
 
 # Ensure googleapiclient is installed
 try:
     import googleapiclient.discovery
 except ImportError:
+    print("googleapiclient not found, installing...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "google-api-python-client"])
     import googleapiclient.discovery
 
