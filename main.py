@@ -1,5 +1,14 @@
 import os
-import googleapiclient.discovery
+import sys
+import subprocess
+
+# Ensure googleapiclient is installed
+try:
+    import googleapiclient.discovery
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "google-api-python-client"])
+    import googleapiclient.discovery
+
 import streamlit as st
 
 # Function to get the YouTube service
